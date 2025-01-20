@@ -31,15 +31,23 @@ const url = require('url'); // CTRL + D : seleciona o proximo com o mesmo nome
 
 //////////////////////////////
 // SERVER
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8') // __dirname é como o . só que se refere ao diretorio onde root da classe e não ao diretorio relativo atual como o .
+const dataObj = JSON.parse(data);
+
 const server = http.createServer((req, res) => {
     console.log(req.url);
 
     const pathName = req.url;
 
-    if (pathName === '/' || pathName === '/overview') {
+    if (pathName === '/overview') {
         res.end('This is the OVERVIEW');
     } else if (pathName === '/product') {
         res.end('This is the PRODUCT');
+    }
+    else if (pathName === '/api') {
+        res.writeHead(200, { 'content-type': 'application/json' });
+        res.end(data);
+
     } else {
         res.writeHead(404, {
             'content-type': 'text/html',
@@ -48,7 +56,6 @@ const server = http.createServer((req, res) => {
         res.end('<h1>Page not found!</h1>');
     }
 
-    res.end('Hello from the server');
 });
 
 server.listen(8000, '127.0.0.1', () => {
